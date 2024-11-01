@@ -25,8 +25,8 @@
         </div>
         <div class="row my-2 align-center">
             <label class="col-12 col-m-3" for="productDescription">Descripción</label>
-            <teaxtarea class="col-12 col-m-9" {{~readonly}} name="productDescription" id="productDescription"
-                placehoder="Descripción del Producto">{{productDescription}}</teaxtarea>
+            <textarea class="col-12 col-m-9" {{~readonly}} name="productDescription" id="productDescription"
+                placehoder="Descripción del Producto">{{productDescription}}</textarea>
             {{if productDescription_error}}
             <div class="col-12 col-m-9 offset-m-3 error">
                 {{productDescription_error}}

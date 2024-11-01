@@ -3,10 +3,10 @@
 namespace Controllers\Products;
 
 use Controllers\PublicController;
-use Dao\Products\Products;
+use Views\Renderer;
+use Dao\Products\Products as ProductsDao;
 use Utilities\Site;
 use Utilities\Validators;
-use Views\Renderer;
 
 class Product extends PublicController
 {
@@ -35,6 +35,9 @@ class Product extends PublicController
         try {
             $this->getData();
             if ($this->isPostBack()) {
+                if ($this->validateData()) {
+                    $this->handlePostAction();
+                }
             }
             $this->setViewData();
             Renderer::render("products/product", $this->viewData);
@@ -46,24 +49,6 @@ class Product extends PublicController
         }
     }
 
-    private function setViewData(): void
-    {
-        $this->viewData["mode"] = $this->mode;
-        $this->viewData["product_xss_token"] = $this->product_xss_token;
-        $this->viewData["FormTitle"] = sprintf(
-            $this->modeDescriptions[$this->mode],
-            $this->product["productId"],
-            $this->product["productName"]
-        );
-        $this->viewData["showCommitBtn"] = $this->showCommitBtn;
-        $this->viewData["readonly"] = $this->readonly;
-
-        $productStatusKey = "productStatus_" . strtolower($this->product["productStatus"]);
-        $this->product[$productStatusKey] = "selected";
-
-        $this->viewData["product"] = $this->product;
-    }
-
     private function getData()
     {
         $this->mode = $_GET["mode"] ?? "NOF";
@@ -71,7 +56,7 @@ class Product extends PublicController
             $this->readonly = $this->mode === "DEL" ? "readonly" : "";
             $this->showCommitBtn = $this->mode !== "DSP";
             if ($this->mode !== "INS") {
-                $this->product = Products::getProductById(intval($_GET["productId"]));
+                $this->product = ProductsDao::getProductById(intval($_GET["productId"]));
                 if (!$this->product) {
                     throw new \Exception("No se encontró el Producto", 1);
                 }
@@ -141,7 +126,7 @@ class Product extends PublicController
 
     private function handleInsert()
     {
-        $result = Products::insertProduct(
+        $result = ProductsDao::insertProduct(
             $this->product["productName"],
             $this->product["productDescription"],
             $this->product["productPrice"],
@@ -158,7 +143,7 @@ class Product extends PublicController
 
     private function handleUpdate()
     {
-        $result = Products::updateProduct(
+        $result = ProductsDao::updateProduct(
             $this->product["productId"],
             $this->product["productName"],
             $this->product["productDescription"],
@@ -176,15 +161,30 @@ class Product extends PublicController
 
     private function handleDelete()
     {
-        $result = Products::deleteProduct(
-            $this->product["productId"]
-        );
+        $result = ProductsDao::deleteProduct($this->product["productId"]);
         if ($result > 0) {
             Site::redirectToWithMsg(
                 "index.php?page=Products_Products",
-                "Producto eliminado exitosamente"
+                "Producto Eliminado exitosamente"
             );
         }
     }
+    
+    private function setViewData(): void
+    {
+        $this->viewData["mode"] = $this->mode;
+        $this->viewData["product_xss_token"] = $this->product_xss_token;
+        $this->viewData["FormTitle"] = sprintf(
+            $this->modeDescriptions[$this->mode],
+            $this->product["productId"],
+            $this->product["productName"]
+        );
+        $this->viewData["showCommitBtn"] = $this->showCommitBtn;
+        $this->viewData["readonly"] = $this->readonly;
 
+        $productStatusKey = "productStatus_" . strtolower($this->product["productStatus"]);
+        $this->product[$productStatusKey] = "selected";
+
+        $this->viewData["product"] = $this->product;
+    }
 }
