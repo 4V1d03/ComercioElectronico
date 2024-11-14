@@ -20,11 +20,18 @@ class User extends PublicController
     ];
     private $readonly = "";
     private $showCommitBtn = true;
-    private $user = [
+    private $usuario = [
         "usercod" => 0,
         "useremail" => "",
         "username" => "",
-        "userest" => "ACT"
+        "userpswd" => "",
+        "userfching" => "",
+        "userpswdest" => "",
+        "userpswdexp" => "",
+        "userest" => "",
+        "useractcod" => "",
+        "userpswdchg" => "",
+        "usertipo" => ""
     ];
     private $user_xss_token = "";
 
@@ -47,54 +54,65 @@ class User extends PublicController
         }
     }
 
-    private function getData()
+    private function getData(): void
     {
         $this->mode = $_GET["mode"] ?? "NOF";
         if (isset($this->modeDescriptions[$this->mode])) {
             $this->readonly = $this->mode === "DEL" ? "readonly" : "";
             $this->showCommitBtn = $this->mode !== "DSP";
             if ($this->mode !== "INS") {
-                $this->user = UsersDao::getUserById(intval($_GET["usercod"]));
-                if (!$this->user) {
+                $this->usuario = UsersDao::getUserById(intval($_GET["usercod"]));
+                if (!$this->usuario) {
                     throw new \Exception("No se encontró el Usuario", 1);
                 }
             }
         } else {
-            throw new \Exception("Formulario cargado en modalidad invalida", 1);
+            throw new \Exception("Formulario cargado en modalidad inválida", 1);
         }
     }
 
-    private function validateData()
+    private function validateData(): bool
     {
         $errors = [];
         $this->user_xss_token = $_POST["user_xss_token"] ?? "";
-        $this->user["usercod"] = intval($_POST["usercod"] ?? "");
-        $this->user["username"] = strval($_POST["username"] ?? "");
-        $this->user["useremail"] = strval($_POST["useremail"] ?? "");
-        $this->user["userest"] = strval($_POST["userest"] ?? "");
+        $this->usuario["usercod"] = intval($_POST["usercod"] ?? "");
+        $this->usuario["useremail"] = strval($_POST["useremail"] ?? "");
+        $this->usuario["username"] = strval($_POST["username"] ?? "");
+        $this->usuario["userpswd"] = strval($_POST["userpswd"] ?? "");
+        $this->usuario["userfching"] = strval($_POST["userfching"] ?? "");
+        $this->usuario["userpswdest"] = strval($_POST["userpswdest"] ?? "");
+        $this->usuario["userpswdexp"] = strval($_POST["userpswdexp"] ?? "");
+        $this->usuario["userest"] = strval($_POST["userest"] ?? "");
+        $this->usuario["useractcod"] = strval($_POST["useractcod"] ?? "");
+        $this->usuario["userpswdchg"] = strval($_POST["userpswdchg"] ?? "");
+        $this->usuario["usertipo"] = strval($_POST["usertipo"] ?? "");
 
-        if (Validators::IsEmpty($this->user["username"])) {
-            $errors["username_error"] = "El nombre del usuario es requerido";
-        }
-
-        if (Validators::IsEmpty($this->user["useremail"])) {
+        if (Validators::IsEmpty($this->usuario["useremail"])) {
             $errors["useremail_error"] = "El correo electrónico es requerido";
         }
 
-        if (!in_array($this->user["userest"], ["ACT", "INA"])) {
-            $errors["userest_error"] = "El estado del usuario es invalido";
+        if (Validators::IsEmpty($this->usuario["username"])) {
+            $errors["username_error"] = "El nombre de usuario es requerido";
+        }
+
+        if (Validators::IsEmpty($this->usuario["userpswd"])) {
+            $errors["userpswd_error"] = "La contraseña es requerida";
+        }
+
+        if (!in_array($this->usuario["userest"], ["ACT", "INA"])) {
+            $errors["userest_error"] = "El estado del usuario es inválido";
         }
 
         if (count($errors) > 0) {
             foreach ($errors as $key => $value) {
-                $this->user[$key] = $value;
+                $this->usuario[$key] = $value;
             }
             return false;
         }
         return true;
     }
 
-    private function handlePostAction()
+    private function handlePostAction(): void
     {
         switch ($this->mode) {
             case "INS":
@@ -107,18 +125,24 @@ class User extends PublicController
                 $this->handleDelete();
                 break;
             default:
-                throw new \Exception("Modo invalido", 1);
+                throw new \Exception("Modo inválido", 1);
                 break;
         }
     }
 
-    private function handleInsert()
+    private function handleInsert(): void
     {
         $result = UsersDao::insertUser(
-            $this->user["useremail"],
-            $this->user["username"],
-            $_POST["userpswd"] ?? "",
-            $this->user["userest"]
+            $this->usuario["useremail"],
+            $this->usuario["username"],
+            $this->usuario["userpswd"],
+            $this->usuario["userfching"],
+            $this->usuario["userpswdest"],
+            $this->usuario["userpswdexp"],
+            $this->usuario["userest"],
+            $this->usuario["useractcod"],
+            $this->usuario["userpswdchg"],
+            $this->usuario["usertipo"]
         );
         if ($result > 0) {
             Site::redirectToWithMsg(
@@ -128,13 +152,20 @@ class User extends PublicController
         }
     }
 
-    private function handleUpdate()
+    private function handleUpdate(): void
     {
         $result = UsersDao::updateUser(
-            $this->user["usercod"],
-            $this->user["useremail"],
-            $this->user["username"],
-            $this->user["userest"]
+            $this->usuario["usercod"],
+            $this->usuario["useremail"],
+            $this->usuario["username"],
+            $this->usuario["userpswd"],
+            $this->usuario["userfching"],
+            $this->usuario["userpswdest"],
+            $this->usuario["userpswdexp"],
+            $this->usuario["userest"],
+            $this->usuario["useractcod"],
+            $this->usuario["userpswdchg"],
+            $this->usuario["usertipo"]
         );
         if ($result > 0) {
             Site::redirectToWithMsg(
@@ -144,13 +175,13 @@ class User extends PublicController
         }
     }
 
-    private function handleDelete()
+    private function handleDelete(): void
     {
-        $result = UsersDao::deleteUser($this->user["usercod"]);
+        $result = UsersDao::deleteUser($this->usuario["usercod"]);
         if ($result > 0) {
             Site::redirectToWithMsg(
                 "index.php?page=Users_Users",
-                "Usuario Eliminado exitosamente"
+                "Usuario eliminado exitosamente"
             );
         }
     }
@@ -161,15 +192,15 @@ class User extends PublicController
         $this->viewData["user_xss_token"] = $this->user_xss_token;
         $this->viewData["FormTitle"] = sprintf(
             $this->modeDescriptions[$this->mode],
-            $this->user["usercod"],
-            $this->user["username"]
+            $this->usuario["usercod"],
+            $this->usuario["username"]
         );
         $this->viewData["showCommitBtn"] = $this->showCommitBtn;
         $this->viewData["readonly"] = $this->readonly;
 
-        $userStatusKey = "userest_" . strtolower($this->user["userest"]);
-        $this->user[$userStatusKey] = "selected";
+        $userestKey = "userest_" . strtolower($this->usuario["userest"]);
+        $this->usuario[$userestKey] = "selected";
 
-        $this->viewData["user"] = $this->user;
+        $this->viewData["usuario"] = $this->usuario;
     }
 }

@@ -14,7 +14,11 @@ class Users extends Table
         int $page = 0,
         int $itemsPerPage = 10
     ) {
-        $sqlstr = "SELECT u.usercod, u.useremail, u.username, u.userfching, u.userest, case when u.userest = 'ACT' then 'Activo' when u.userest = 'INA' then 'Inactivo' else 'Sin Asignar' end as userStatusDsc FROM usuario u";
+        $sqlstr = "SELECT u.usercod, u.useremail, u.username, u.userfching, u.userest, 
+                    CASE WHEN u.userest = 'ACT' THEN 'Activo' 
+                         WHEN u.userest = 'INA' THEN 'Inactivo' 
+                         ELSE 'Sin Asignar' END AS userStatusDsc 
+                    FROM usuario u";
         $sqlstrCount = "SELECT COUNT(*) as count FROM usuario u";
         $conditions = [];
         $params = [];
@@ -23,7 +27,7 @@ class Users extends Table
             $params["partialName"] = "%" . $partialName . "%";
         }
         if (!in_array($status, ["ACT", "INA", ""])) {
-            throw new \Exception("Error Processing Request Status has invalid value");
+            throw new \Exception("Error Processing Request: Status has invalid value");
         }
         if ($status != "") {
             $conditions[] = "u.userest = :status";
@@ -34,7 +38,7 @@ class Users extends Table
             $sqlstrCount .= " WHERE " . implode(" AND ", $conditions);
         }
         if (!in_array($orderBy, ["usercod", "username", "useremail", ""])) {
-            throw new \Exception("Error Processing Request OrderBy has invalid value");
+            throw new \Exception("Error Processing Request: OrderBy has invalid value");
         }
         if ($orderBy != "") {
             $sqlstr .= " ORDER BY " . $orderBy;
@@ -44,7 +48,9 @@ class Users extends Table
         }
         $numeroDeRegistros = self::obtenerUnRegistro($sqlstrCount, $params)["count"];
         $pagesCount = ceil($numeroDeRegistros / $itemsPerPage);
-        $page = max(0, min($page, $pagesCount - 1));
+        if ($page > $pagesCount - 1) {
+            $page = $pagesCount - 1;
+        }
         $sqlstr .= " LIMIT " . $page * $itemsPerPage . ", " . $itemsPerPage;
 
         $registros = self::obtenerRegistros($sqlstr, $params);
@@ -53,7 +59,9 @@ class Users extends Table
 
     public static function getUserById(int $usercod)
     {
-        $sqlstr = "SELECT u.usercod, u.useremail, u.username, u.userfching, u.userest FROM usuario u WHERE u.usercod = :usercod";
+        $sqlstr = "SELECT u.usercod, u.useremail, u.username, u.userpswd, u.userfching, 
+                    u.userpswdest, u.userpswdexp, u.userest, u.useractcod, u.userpswdchg, u.usertipo 
+                    FROM usuario u WHERE u.usercod = :usercod";
         $params = ["usercod" => $usercod];
         return self::obtenerUnRegistro($sqlstr, $params);
     }
@@ -62,14 +70,29 @@ class Users extends Table
         string $useremail,
         string $username,
         string $userpswd,
-        string $userest
+        string $userfching,
+        string $userpswdest,
+        string $userpswdexp,
+        string $userest,
+        string $useractcod,
+        string $userpswdchg,
+        string $usertipo
     ) {
-        $sqlstr = "INSERT INTO usuario (useremail, username, userpswd, userest, userfching) VALUES (:useremail, :username, :userpswd, :userest, NOW())";
+        $sqlstr = "INSERT INTO usuario (useremail, username, userpswd, userfching, userpswdest, 
+                    userpswdexp, userest, useractcod, userpswdchg, usertipo) 
+                    VALUES (:useremail, :username, :userpswd, :userfching, :userpswdest, 
+                            :userpswdexp, :userest, :useractcod, :userpswdchg, :usertipo)";
         $params = [
             "useremail" => $useremail,
             "username" => $username,
-            "userpswd" => password_hash($userpswd, PASSWORD_DEFAULT),
-            "userest" => $userest
+            "userpswd" => $userpswd,
+            "userfching" => $userfching,
+            "userpswdest" => $userpswdest,
+            "userpswdexp" => $userpswdexp,
+            "userest" => $userest,
+            "useractcod" => $useractcod,
+            "userpswdchg" => $userpswdchg,
+            "usertipo" => $usertipo
         ];
         return self::executeNonQuery($sqlstr, $params);
     }
@@ -78,14 +101,31 @@ class Users extends Table
         int $usercod,
         string $useremail,
         string $username,
-        string $userest
+        string $userpswd,
+        string $userfching,
+        string $userpswdest,
+        string $userpswdexp,
+        string $userest,
+        string $useractcod,
+        string $userpswdchg,
+        string $usertipo
     ) {
-        $sqlstr = "UPDATE usuario SET useremail = :useremail, username = :username, userest = :userest WHERE usercod = :usercod";
+        $sqlstr = "UPDATE usuario SET useremail = :useremail, username = :username, userpswd = :userpswd, 
+                    userfching = :userfching, userpswdest = :userpswdest, userpswdexp = :userpswdexp, 
+                    userest = :userest, useractcod = :useractcod, userpswdchg = :userpswdchg, 
+                    usertipo = :usertipo WHERE usercod = :usercod";
         $params = [
             "usercod" => $usercod,
             "useremail" => $useremail,
             "username" => $username,
-            "userest" => $userest
+            "userpswd" => $userpswd,
+            "userfching" => $userfching,
+            "userpswdest" => $userpswdest,
+            "userpswdexp" => $userpswdexp,
+            "userest" => $userest,
+            "useractcod" => $useractcod,
+            "userpswdchg" => $userpswdchg,
+            "usertipo" => $usertipo
         ];
         return self::executeNonQuery($sqlstr, $params);
     }

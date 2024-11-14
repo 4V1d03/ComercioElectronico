@@ -5,7 +5,7 @@ namespace Controllers\Users;
 use Controllers\PublicController;
 use Utilities\Context;
 use Utilities\Paging;
-use Dao\Users\Users as DaoUsers;
+use Dao\Users\Users as UsersDao;
 use Views\Renderer;
 
 class Users extends PublicController
@@ -25,7 +25,7 @@ class Users extends PublicController
     {
         $this->getParamsFromContext();
         $this->getParams();
-        $tmpUsers = DaoUsers::getUsers(
+        $tmpUsers = UsersDao::getUsers(
             $this->partialName,
             $this->status,
             $this->orderBy,
@@ -59,7 +59,6 @@ class Users extends PublicController
         $this->pageNumber = isset($_GET["pageNum"]) ? intval($_GET["pageNum"]) : $this->pageNumber;
         $this->itemsPerPage = isset($_GET["itemsPerPage"]) ? intval($_GET["itemsPerPage"]) : $this->itemsPerPage;
     }
-
     private function getParamsFromContext(): void
     {
         $this->partialName = Context::getContextByKey("users_partialName");
@@ -71,7 +70,6 @@ class Users extends PublicController
         if ($this->pageNumber < 1) $this->pageNumber = 1;
         if ($this->itemsPerPage < 1) $this->itemsPerPage = 10;
     }
-
     private function setParamsToContext(): void
     {
         Context::setContext("users_partialName", $this->partialName, true);
@@ -81,7 +79,6 @@ class Users extends PublicController
         Context::setContext("users_page", $this->pageNumber, true);
         Context::setContext("users_itemsPerPage", $this->itemsPerPage, true);
     }
-
     private function setParamsToDataView(): void
     {
         $this->viewData["partialName"] = $this->partialName;
@@ -108,8 +105,8 @@ class Users extends PublicController
             $this->usersCount,
             $this->itemsPerPage,
             $this->pageNumber,
-            "index.php?page=Users_Users",
-            "Users_Users"
+            "index.php?page=Usuarios_Usuarios",
+            "Usuarios_Usuarios"
         );
         $this->viewData["pagination"] = $pagination;
     }

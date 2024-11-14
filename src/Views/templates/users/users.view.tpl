@@ -1,10 +1,10 @@
-<h1>Trabajar con Usuarios</h1>
+<h1>Gestión de Usuarios</h1>
 <section class="grid">
     <div class="row">
         <form class="col-12 col-m-8" action="index.php" method="get">
             <div class="flex align-center">
                 <div class="col-8 row">
-                    <input type="hidden" name="page" value="Users_Users">
+                    <input type="hidden" name="page" value="Usuarios_Usuarios">
                     <label class="col-3" for="partialName">Nombre</label>
                     <input class="col-9" type="text" name="partialName" id="partialName" value="{{partialName}}" />
                     <label class="col-3" for="status">Estado</label>
@@ -27,61 +27,52 @@
             <tr>
                 <th>
                     {{ifnot OrderByUsercod}}
-                    <a href="index.php?page=Users_Users&orderBy=usercod&orderDescending=0">Id <i
-                            class="fas fa-sort"></i></a>
+                    <a href="index.php?page=Users_Users&orderBy=usercod&orderDescending=0">Código <i class="fas fa-sort"></i></a>
                     {{endifnot OrderByUsercod}}
                     {{if OrderUsercodDesc}}
-                    <a href="index.php?page=Users_Users&orderBy=clear&orderDescending=0">Id <i
-                            class="fas fa-sort-down"></i></a>
+                    <a href="index.php?page=Users_Users&orderBy=clear&orderDescending=0">Código <i class="fas fa-sort-down"></i></a>
                     {{endif OrderUsercodDesc}}
                     {{if OrderUsercod}}
-                    <a href="index.php?page=Users_Users&orderBy=usercod&orderDescending=1">Id <i
-                            class="fas fa-sort-up"></i></a>
+                    <a href="index.php?page=Users_Users&orderBy=usercod&orderDescending=1">Código <i class="fas fa-sort-up"></i></a>
                     {{endif OrderUsercod}}
                 </th>
                 <th class="left">
                     {{ifnot OrderByUsername}}
-                    <a href="index.php?page=Users_Users&orderBy=username&orderDescending=0">Nombre <i
-                            class="fas fa-sort"></i></a>
+                    <a href="index.php?page=Users_Users&orderBy=username&orderDescending=0">Nombre <i class="fas fa-sort"></i></a>
                     {{endifnot OrderByUsername}}
                     {{if OrderUsernameDesc}}
-                    <a href="index.php?page=Users_Users&orderBy=clear&orderDescending=0">Nombre <i
-                            class="fas fa-sort-down"></i></a>
+                    <a href="index.php?page=Users_Users&orderBy=clear&orderDescending=0">Nombre <i class="fas fa-sort-down"></i></a>
                     {{endif OrderUsernameDesc}}
                     {{if OrderUsername}}
-                    <a href="index.php?page=Users_Users&orderBy=username&orderDescending=1">Nombre <i
-                            class="fas fa-sort-up"></i></a>
+                    <a href="index.php?page=Users_Users&orderBy=username&orderDescending=1">Nombre <i class="fas fa-sort-up"></i></a>
                     {{endif OrderUsername}}
                 </th>
                 <th>
                     {{ifnot OrderByUseremail}}
-                    <a href="index.php?page=Users_Users&orderBy=useremail&orderDescending=0">Email <i
-                            class="fas fa-sort"></i></a>
+                    <a href="index.php?page=Users_Users&orderBy=useremail&orderDescending=0">Correo Electrónico <i class="fas fa-sort"></i></a>
                     {{endifnot OrderByUseremail}}
                     {{if OrderUseremailDesc}}
-                    <a href="index.php?page=Users_Users&orderBy=clear&orderDescending=0">Email <i
-                            class="fas fa-sort-down"></i></a>
+                    <a href="index.php?page=Users_Users&orderBy=clear&orderDescending=0">Correo Electrónico <i class="fas fa-sort-down"></i></a>
                     {{endif OrderUseremailDesc}}
                     {{if OrderUseremail}}
-                    <a href="index.php?page=Users_Users&orderBy=useremail&orderDescending=1">Email <i
-                            class="fas fa-sort-up"></i></a>
+                    <a href="index.php?page=Users_Users&orderBy=useremail&orderDescending=1">Correo Electrónico <i class="fas fa-sort-up"></i></a>
                     {{endif OrderUseremail}}
                 </th>
                 <th>Estado</th>
-                <th><a href="index.php?page=Users-User&mode=INS">Nuevo</a></th>
+                <th><a href="index.php?page=Users_User&mode=INS">Nuevo</a></th>
             </tr>
         </thead>
         <tbody>
             {{foreach users}}
             <tr>
                 <td>{{usercod}}</td>
-                <td><a class="link" href="index.php?page=Users-User&mode=DSP&usercod={{usercod}}">{{username}}</a></td>
+                <td> <a class="link" href="index.php?page=Users_User&mode=DSP&usercod={{usercod}}">{{username}}</a></td>
                 <td>{{useremail}}</td>
                 <td class="center">{{userStatusDsc}}</td>
                 <td class="center">
-                    <a href="index.php?page=Users-User&mode=UPD&usercod={{usercod}}">Editar</a>
+                    <a href="index.php?page=Users_User&mode=UPD&usercod={{usercod}}">Editar</a>
                     &nbsp;
-                    <a href="index.php?page=Users-User&mode=DEL&usercod={{usercod}}">Eliminar</a>
+                    <a href="index.php?page=Users_User&mode=DEL&usercod={{usercod}}">Eliminar</a>
                 </td>
             </tr>
             {{endfor users}}
