@@ -135,7 +135,8 @@ class User extends PublicController
         $result = UsersDao::insertUser(
             $this->usuario["useremail"],
             $this->usuario["username"],
-            $this->usuario["userpswd"],
+            //$this->usuario["userpswd"],
+            $_POST["userpswd"] ?? "",
             $this->usuario["userfching"],
             $this->usuario["userpswdest"],
             $this->usuario["userpswdexp"],

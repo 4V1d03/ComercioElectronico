@@ -25,7 +25,7 @@
     <table>
         <thead>
             <tr>
-                
+            
                 <th>
                     {{ifnot OrderByFncod}}
                     <a href="index.php?page=Funciones_Funciones&orderBy=fncod&orderDescending=0">Código <i class="fas fa-sort"></i></a>

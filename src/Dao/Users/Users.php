@@ -85,7 +85,8 @@ class Users extends Table
         $params = [
             "useremail" => $useremail,
             "username" => $username,
-            "userpswd" => $userpswd,
+            //"userpswd" => $userpswd,
+            "userpswd" => password_hash($userpswd, PASSWORD_DEFAULT),
             "userfching" => $userfching,
             "userpswdest" => $userpswdest,
             "userpswdexp" => $userpswdexp,
