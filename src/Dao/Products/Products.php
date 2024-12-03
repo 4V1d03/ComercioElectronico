@@ -87,23 +87,32 @@ class  Products extends Table
         float $productPrice,
         string $productImgUrl,
         string $productStatus
-    ) {
+      ) {
         $sqlstr = "UPDATE products SET productName = :productName, productDescription = :productDescription, productPrice = :productPrice, productImgUrl = :productImgUrl, productStatus = :productStatus WHERE productId = :productId";
         $params = [
-            "productId" => $productId,
-            "productName" => $productName,
-            "productDescription" => $productDescription,
-            "productPrice" => $productPrice,
-            "productImgUrl" => $productImgUrl,
-            "productStatus" => $productStatus
+          "productId" => $productId,
+          "productName" => $productName,
+          "productDescription" => $productDescription,
+          "productPrice" => $productPrice,
+          "productImgUrl" => $productImgUrl,
+          "productStatus" => $productStatus
         ];
         return self::executeNonQuery($sqlstr, $params);
     }
 
     public static function deleteProduct(int $productId)
-    {
-        $sqlstr = "DELETE FROM products WHERE productId = :productId";
-        $params = ["productId" => $productId];
-        return self::executeNonQuery($sqlstr, $params);
-    }
+  {
+    $sqlstr = "DELETE FROM products WHERE productId = :productId";
+    $params = ["productId" => $productId];
+    return self::executeNonQuery($sqlstr, $params);
+  }
+
+
+
+
+
+
+
+
+
 }
