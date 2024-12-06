@@ -102,8 +102,8 @@
     {{with usuario}}
     <form action="index.php?page=Users_User&mode={{~mode}}&usercod={{usercod}}" method="POST">
         <div class="form-row">
-            <label class="form-label" for="usercodD">Código</label>
-            <input class="form-input" readonly disabled type="text" name="usercodD" id="usercodD"
+            <label class="form-label" for="usercod">Código</label>
+            <input class="form-input" readonly disabled type="text" name="usercod" id="usercod"
                 placeholder="Código" value="{{usercod}}" />
             <input type="hidden" name="mode" value="{{~mode}}" />
             <input type="hidden" name="usercod" value="{{usercod}}" />

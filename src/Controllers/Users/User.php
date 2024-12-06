@@ -178,8 +178,8 @@ class User extends PublicController
 
     private function handleDelete(): void
     {
-        $result = UsersDao::deleteUser($this->usuario["usercod"]);
-        if ($result > 0) {
+        $result = UsersDao::deleteUser($this->usuario['usercod']);
+        if ($result) {
             Site::redirectToWithMsg(
                 "index.php?page=Users_Users",
                 "Usuario eliminado exitosamente"

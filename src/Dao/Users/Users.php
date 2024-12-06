@@ -133,8 +133,9 @@ class Users extends Table
 
     public static function deleteUser(int $usercod)
     {
-        $sqlstr = "DELETE FROM usuario WHERE usercod = :usercod";
-        $params = ["usercod" => $usercod];
-        return self::executeNonQuery($sqlstr, $params);
+        $sqlstr = "delete from usuario where usercod = :usercod";
+        //$params = ["usercod" => $usercod];
+        //return self::executeNonQuery($sqlstr, $params);
+        return self::executeNonQuery($sqlstr, ["usercod"=>$usercod]);
     }
 }
